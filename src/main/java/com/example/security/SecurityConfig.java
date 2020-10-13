@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,19 +25,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     AccountService accountService;
 
-    // Authentication Hierarchy
-    public AccessDecisionManager accessDecisionManager(){
+    // Voter's expression handler custom
+    public SecurityExpressionHandler accessDecisionManager(){
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
         roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
 
         DefaultWebSecurityExpressionHandler handler = new DefaultWebSecurityExpressionHandler();
         handler.setRoleHierarchy(roleHierarchy);
 
-        WebExpressionVoter webExpressionVoter = new WebExpressionVoter();
-        webExpressionVoter.setExpressionHandler(handler);
-
-        List<AccessDecisionVoter<? extends Object>> voters = Arrays.asList(webExpressionVoter);
-        return new AffirmativeBased(voters);
+        return handler;
     }
 
     @Override
@@ -46,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .mvcMatchers("/admin").hasRole("ADMIN")
                     .mvcMatchers("/user").hasRole("USER")
                     .anyRequest().authenticated()
-                    .accessDecisionManager(accessDecisionManager());
+                    .expressionHandler(accessDecisionManager());
         http.formLogin();
 
         http.csrf().disable();
