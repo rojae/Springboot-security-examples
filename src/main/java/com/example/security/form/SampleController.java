@@ -38,7 +38,7 @@ public class SampleController {
     // After Login
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal){
-        model.addAttribute("message", "Welcome"+principal.getName());
+        model.addAttribute("message", "Welcome : "+principal.getName());
 
         // spring security contextHolder는 ThreadLocal을 통해서 공유된다
         // 다른 브라우저에서 다른 계정 로그인 시에, 다른 로그 출력
@@ -52,7 +52,14 @@ public class SampleController {
     // After Login
     @GetMapping("/admin")
     public String admin(Model model, Principal principal){
-        model.addAttribute("message", "Welcome Admin" + principal.getName());
+        model.addAttribute("message", "Welcome Admin : " + principal.getName());
         return "admin";
+    }
+
+    // After Login
+    @GetMapping("/user")
+    public String user(Model model, Principal principal){
+        model.addAttribute("message", "Welcome User : " + principal.getName());
+        return "user";
     }
 }
