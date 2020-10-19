@@ -2,6 +2,7 @@ package com.example.security;
 
 import com.example.security.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
@@ -10,6 +11,7 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
@@ -34,6 +36,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         handler.setRoleHierarchy(roleHierarchy);
 
         return handler;
+    }
+
+
+    // for test spring security filter size = 0 (IN FilterChainProxy)
+    // more speedy
+
+    // webSecurity permitAll보다 빠르다.
+    // 모든 필터를 거치며
+    // permitAll (허용)은 SecurityFilterInterceptor (마지막 필터)를 거치기 때문에
+    @Override
+    public void configure(WebSecurity web){
+        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+        web.ignoring().requestMatchers(PathRequest.toH2Console());
+        //web.ignoring().regexMatchers("");
+        //web.ignoring().mvcMatchers("/info");
+        //web.ignoring().mvcMatchers("/favicon.ico");
     }
 
     @Override
