@@ -2,12 +2,16 @@ package com.example.security.form;
 
 import com.example.security.account.AccountContext;
 import com.example.security.account.AccountRepository;
+import com.example.security.common.SecurityLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
+import java.util.concurrent.Callable;
 
 @Controller
 public class SampleController {
@@ -61,5 +65,18 @@ public class SampleController {
     public String user(Model model, Principal principal){
         model.addAttribute("message", "Welcome User : " + principal.getName());
         return "user";
+    }
+
+    @GetMapping("/async-handler")
+    @ResponseBody
+    public Callable<String> asyncHandler(){
+        SecurityLogger.log("MVC");  // tomcat에서 할당해준 NIO 쓰레드
+
+        // 별도의 쓰레드
+        // 둘은 동일한 Security context를 가짐 -> webAsyncManagerIntegrationFilter이 도움
+        return () -> {
+                SecurityLogger.log("Callable");
+                return "Async Handler";
+        };
     }
 }
