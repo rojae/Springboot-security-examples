@@ -4,7 +4,6 @@ import com.example.security.account.AccountContext;
 import com.example.security.account.AccountRepository;
 import com.example.security.common.SecurityLogger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,5 +77,14 @@ public class SampleController {
                 SecurityLogger.log("Callable");
                 return "Async Handler";
         };
+    }
+
+    @GetMapping("/async-service")
+    @ResponseBody
+    public String asyncService(){
+        SecurityLogger.log("MVC. before async service");
+        sampleService.asyncService();   // async 실행 순서 보장 x
+        SecurityLogger.log("MVC. after async service");
+        return "Async Service";
     }
 }

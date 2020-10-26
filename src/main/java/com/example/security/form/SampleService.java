@@ -2,6 +2,8 @@ package com.example.security.form;
 
 import com.example.security.account.Account;
 import com.example.security.account.AccountContext;
+import com.example.security.common.SecurityLogger;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,4 +19,12 @@ public class SampleService {
         System.out.println("==================================");
         System.out.println(account.getUsername());
     }
+
+    // new Thread for async
+    @Async
+    public void asyncService(){
+        SecurityLogger.log("Async Service");
+        System.out.println("Async service is called");
+    }
+
 }
