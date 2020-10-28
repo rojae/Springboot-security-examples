@@ -58,17 +58,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception{
         http.authorizeRequests()
-                    .mvcMatchers("/", "/info", "/account/**").permitAll()
+                    .mvcMatchers("/", "/info", "/account/**", "/signup").permitAll()
                     .mvcMatchers("/admin").hasRole("ADMIN")
                     .mvcMatchers("/user").hasRole("USER")
                     .anyRequest().authenticated()
                     .expressionHandler(accessDecisionManager());
         http.formLogin();
-
-        http.csrf().disable();
-
-        http.headers().frameOptions().disable();
-
         http.httpBasic();
 
         // Security Strategy : local thread -> change to share child thread
