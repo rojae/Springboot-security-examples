@@ -63,8 +63,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .mvcMatchers("/user").hasRole("USER")
                     .anyRequest().authenticated()
                     .expressionHandler(accessDecisionManager());
-        http.formLogin();
+        http.formLogin()
+                    .loginPage("/login")
+                    .permitAll();
+
         http.httpBasic();
+
+        http.logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login");
+
+        http.rememberMe()
+                .userDetailsService(accountService)
+                .key("remember-me-sample");
 
         // Security Strategy : local thread -> change to share child thread
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
