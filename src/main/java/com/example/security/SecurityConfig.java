@@ -74,6 +74,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSIONID")
                 .logoutSuccessUrl("/login");
 
+        // 403 forbid
+        http.exceptionHandling()
+                .accessDeniedPage("/access-denied");
+
         http.rememberMe()
                 .userDetailsService(accountService)
                 .key("remember-me-sample");
