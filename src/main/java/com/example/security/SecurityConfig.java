@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     AccountService accountService;
 
     // Voter's expression handler custom
-    public SecurityExpressionHandler accessDecisionManager(){
+    public SecurityExpressionHandler accessDecisionManager() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
         roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
 
@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 모든 필터를 거치며
     // permitAll (허용)은 SecurityFilterInterceptor (마지막 필터)를 거치기 때문에
     @Override
-    public void configure(WebSecurity web){
+    public void configure(WebSecurity web) {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
         web.ignoring().requestMatchers(PathRequest.toH2Console());
         //web.ignoring().regexMatchers("");
@@ -56,26 +56,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception{
+    protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                    .mvcMatchers("/", "/info", "/account/**", "/signup").permitAll()
-                    .mvcMatchers("/admin").hasRole("ADMIN")
-                    .mvcMatchers("/user").hasRole("USER")
-                    .anyRequest().authenticated()
-                    .expressionHandler(accessDecisionManager());
+                .mvcMatchers("/", "/info", "/account/**", "/signup", "/error").permitAll()
+                .mvcMatchers("/admin").hasRole("ADMIN")
+                .mvcMatchers("/user").hasRole("USER")
+                .anyRequest().authenticated()
+                .expressionHandler(accessDecisionManager());
         http.formLogin()
-                    .loginPage("/login")
-                    .permitAll();
+                .loginPage("/login")
+                .permitAll();
 
         http.httpBasic();
 
         http.logout()
                 .logoutUrl("/logout")
+                .deleteCookies("JSESSIONID")
                 .logoutSuccessUrl("/login");
 
         http.rememberMe()
                 .userDetailsService(accountService)
                 .key("remember-me-sample");
+
+        // session security strategy
+        http.sessionManagement().sessionFixation()
+                    .changeSessionId().invalidSessionUrl("/error")
+                    .maximumSessions(1).expiredUrl("/login").maxSessionsPreventsLogin(false);
+
+
 
         // Security Strategy : local thread -> change to share child thread
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
@@ -84,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // security config
     // 명시적으로 service type 알려주기
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception{
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(accountService);
     }
 }
