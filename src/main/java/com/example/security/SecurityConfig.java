@@ -92,8 +92,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 });
 
         http.rememberMe()
+                //.tokenValiditySeconds()   쿠키 만료 일자
+                //.rememberMeParameter()  html 파라미터
+                //.useSecureCookie() https만 접근 가능하도록 설계
+                //.alwaysRemember() form에서 remember-me 버튼을 만들지 않아도 항상 로그인 기억 동작
                 .userDetailsService(accountService)
                 .key("remember-me-sample");
+
+
 
         // session security strategy
         http.sessionManagement().sessionFixation()

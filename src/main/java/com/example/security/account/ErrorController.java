@@ -10,7 +10,7 @@ public class ErrorController {
     @GetMapping("/error")
     public ModelAndView errorPage(){
         ModelAndView mav =  new ModelAndView("/error");
-        mav.addObject("message", "죄송합니다. 다시 시도해주세요");
+        mav.addObject("message", "Sorry. Try again");
         return mav;
     }
 }
