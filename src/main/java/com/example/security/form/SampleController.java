@@ -1,13 +1,12 @@
 package com.example.security.form;
 
+import com.example.security.book.BookRepository;
 import com.example.security.account.Account;
 import com.example.security.account.AccountContext;
 import com.example.security.account.AccountRepository;
-import com.example.security.account.UserAccount;
 import com.example.security.common.CurrentUser;
 import com.example.security.common.SecurityLogger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +23,9 @@ public class SampleController {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    BookRepository bookRepository;
 
     @GetMapping("/")
     public String index(Model model, @CurrentUser Account account) {
@@ -67,6 +69,8 @@ public class SampleController {
     @GetMapping("/user")
     public String user(Model model, Principal principal){
         model.addAttribute("message", "Welcome User : " + principal.getName());
+        model.addAttribute("books", bookRepository.findCurrentUserBooks());
+
         return "user";
     }
 
