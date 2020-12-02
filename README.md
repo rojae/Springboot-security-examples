@@ -6,3 +6,6 @@
 
 ### 자세한 설명
 [doc](https://docs.google.com/document/d/1Q1ZH3GoEMZMD9Mww4wuOF4eet-f50zgs9YaVIJaYrqo/edit#)
+
+### 블로그 업로드 예정
+https://redcoder.tistory.com/
